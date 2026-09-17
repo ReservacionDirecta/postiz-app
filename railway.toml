@@ -2,8 +2,9 @@
 nixPkgs = ['nodejs', 'python3']
 aptPkgs = ['build-essential', 'libudev-dev']
 
-[phases.build]
-commands = ["pnpm run build"]
+[build]
+builder = "NIXPACKS"
+buildCommand = "pnpm run build"
 
-[phases.deploy]
+[deploy]
 startCommand = "pnpm --filter ./apps/backend run start"
