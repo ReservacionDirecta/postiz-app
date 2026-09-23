@@ -7,4 +7,4 @@ builder = "NIXPACKS"
 buildCommand = "pnpm run build"
 
 [deploy]
-startCommand = "pnpm --filter ./apps/backend run start"
+startCommand = "pnpm run prisma-db-push && pnpm --filter ./apps/backend run start"
