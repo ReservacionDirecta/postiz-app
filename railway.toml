@@ -4,7 +4,7 @@ aptPkgs = ['build-essential', 'libudev-dev']
 
 [build]
 builder = "NIXPACKS"
-buildCommand = "pnpm run build"
+buildCommand = 'if [ "$POSTIZ_ROLE" = "frontend" ]; then pnpm --filter ./apps/frontend run build; else pnpm --filter ./apps/backend --filter ./apps/orchestrator run build; fi'
 
 [deploy]
-startCommand = "pnpm run prisma-db-push && pnpm --filter ./apps/backend --filter ./apps/orchestrator --parallel start"
+startCommand = 'if [ "$POSTIZ_ROLE" = "frontend" ]; then pnpm --filter ./apps/frontend exec next start -p ${PORT:-4200}; else pnpm run prisma-db-push && pnpm --filter ./apps/backend --filter ./apps/orchestrator --parallel start; fi'
