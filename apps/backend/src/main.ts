@@ -62,6 +62,19 @@ async function start() {
 
   app.use(cookieParser());
   app.use(compression());
+
+  // Serve user uploads directly when using local storage (the all-in-one
+  // docker image serves them via nginx instead). Writes are mime
+  // allow-listed in LocalStorage, so only media files can land here.
+  if (
+    process.env.STORAGE_PROVIDER === 'local' &&
+    process.env.UPLOAD_DIRECTORY
+  ) {
+    app.use('/uploads', (await import('express')).static(
+      process.env.UPLOAD_DIRECTORY
+    ));
+  }
+
   app.useGlobalFilters(new SubscriptionExceptionFilter());
   app.useGlobalFilters(new PostValidationExceptionFilter());
   app.useGlobalFilters(new HttpExceptionFilter());

@@ -61,8 +61,8 @@ const nextConfig = {
       {
         source: '/uploads/:path*',
         destination:
-          process.env.STORAGE_PROVIDER === 'local'
-            ? '/api/uploads/:path*'
+          process.env.STORAGE_PROVIDER === 'local' && backendUrl
+            ? `${backendUrl}/uploads/:path*`
             : '/404',
       },
     ];
