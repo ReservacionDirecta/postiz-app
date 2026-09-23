@@ -36,9 +36,11 @@ export class TemporalRegister implements OnModuleInit {
       if (missingAttributes.length > 0) {
         await connection.operatorService.addSearchAttributes({
           namespace: process.env.TEMPORAL_NAMESPACE || 'default',
-          searchAttributes: missingAttributes.reduce((all, current) => {
+        searchAttributes: missingAttributes.reduce((all, current) => {
             // @ts-ignore
-            all[current] = 1;
+            // KEYWORD (2): TEXT attributes are capped on SQL visibility
+            // (Temporal without Elasticsearch); all queries use equality.
+            all[current] = 2;
             return all;
           }, {}),
         });
