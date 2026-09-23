@@ -1,6 +1,17 @@
 import { parse } from 'tldts';
 
-export function getCookieUrlFromDomain(domain: string) {
+export function getCookieUrlFromDomain(
+  domain: string
+): string | undefined {
   const url = parse(domain);
-  return url.domain! ? '.' + url.domain! : url.hostname!;
+  if (!url.domain) {
+    return url.hostname || undefined;
+  }
+  // When the registrable domain IS a public suffix (e.g. *.up.railway.app),
+  // browsers reject cookies with a Domain attribute entirely. Return
+  // undefined so Express sets a host-only cookie instead.
+  if (url.domain === url.publicSuffix) {
+    return undefined;
+  }
+  return '.' + url.domain;
 }

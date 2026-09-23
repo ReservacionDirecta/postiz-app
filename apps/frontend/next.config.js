@@ -45,7 +45,19 @@ const nextConfig = {
     ];
   },
   async rewrites() {
+    // Same-origin API proxy: keeps auth cookies first-party so login works
+    // on shared-suffix hosts (e.g. *.up.railway.app) where cross-site
+    // cookies are rejected. Requires NEXT_PUBLIC_BACKEND_URL=/api.
+    const backendUrl = process.env.BACKEND_INTERNAL_URL;
     return [
+      ...(backendUrl
+        ? [
+            {
+              source: '/api/:path*',
+              destination: `${backendUrl}/:path*`,
+            },
+          ]
+        : []),
       {
         source: '/uploads/:path*',
         destination:
